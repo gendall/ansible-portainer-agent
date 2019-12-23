@@ -1,0 +1,28 @@
+---
+- name: Create monitor network
+  docker_network:
+    name: portainer_agent_network
+    driver: overlay
+    attachable: yes
+
+- name: Deploy monitor agent
+  docker_swarm_service:
+    name: portainer_agent
+    image: portainer/agent
+    mode: global
+    publish:
+      - mode: host
+        target_port: 9001
+        published_port: 9001
+    env:
+      AGENT_CLUSTER_ADDR: tasks.portainer_agent
+      AGENT_SECRET: "{{ lookup('env', 'PORTAINER_SECRET') | default('', true) }}"
+    networks:
+      - portainer_agent_network
+    mounts:
+      - source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        type: bind
+      - source: /var/lib/docker/volumes
+        target: /var/lib/docker/volumes
+        type: bind

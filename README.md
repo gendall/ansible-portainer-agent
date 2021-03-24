@@ -11,7 +11,7 @@ Include this role in a playbook using a [requirements.txt](https://galaxy.ansibl
 ```yaml
 - hosts: manager[0]
   roles:
-    - portainer-agent
+    - gendall.portainer_agent
 ```
 
 ## Deployment
